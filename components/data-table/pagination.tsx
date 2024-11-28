@@ -18,7 +18,10 @@ interface PaginationProps {
   totalPage?: number;
 }
 
-export function Pagination({ currentPage = 1, totalPage = 1 }: PaginationProps) {
+export function DataTablePagination({
+  currentPage = 1,
+  totalPage = 1,
+}: PaginationProps) {
   const pathname = usePathname();
 
   const pagerList: React.ReactElement[] = [];
@@ -77,7 +80,10 @@ export function Pagination({ currentPage = 1, totalPage = 1 }: PaginationProps) 
       );
     }
 
-    if (totalPage - currentPage >= pageBufferSize * 2 && currentPage !== totalPage - 2) {
+    if (
+      totalPage - currentPage >= pageBufferSize * 2 &&
+      currentPage !== totalPage - 2
+    ) {
       const lastOne = pagerList[pagerList.length - 1];
       pagerList[pagerList.length - 1] = React.cloneElement(lastOne);
 
@@ -98,7 +104,9 @@ export function Pagination({ currentPage = 1, totalPage = 1 }: PaginationProps) 
     if (right !== totalPage) {
       pagerList.push(
         <PaginationItem key={totalPage}>
-          <PaginationLink href={pathname + `?page=${totalPage}`}>{totalPage}</PaginationLink>
+          <PaginationLink href={pathname + `?page=${totalPage}`}>
+            {totalPage}
+          </PaginationLink>
         </PaginationItem>,
       );
     }
@@ -108,24 +116,15 @@ export function Pagination({ currentPage = 1, totalPage = 1 }: PaginationProps) 
     <RCPagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious href={pathname + `?page=${Math.max(currentPage - 1, 1)}`} />
+          <PaginationPrevious
+            href={pathname + `?page=${Math.max(currentPage - 1, 1)}`}
+          />
         </PaginationItem>
         {pagerList}
-        {/*{Array.from({ length: totalPage }, (_, i) => (*/}
-        {/*  <PaginationItem key={`PaginationItem-${i + 1}`}>*/}
-        {/*    <PaginationLink*/}
-        {/*      href={pathname + `?page=${i + 1}`}*/}
-        {/*      isActive={page === i + 1}*/}
-        {/*    >*/}
-        {/*      {i + 1}*/}
-        {/*    </PaginationLink>*/}
-        {/*  </PaginationItem>*/}
-        {/*))}*/}
-        {/*<PaginationItem>*/}
-        {/*  <PaginationEllipsis />*/}
-        {/*</PaginationItem>*/}
         <PaginationItem>
-          <PaginationNext href={pathname + `?page=${Math.min(currentPage + 1, totalPage)}`} />
+          <PaginationNext
+            href={pathname + `?page=${Math.min(currentPage + 1, totalPage)}`}
+          />
         </PaginationItem>
       </PaginationContent>
     </RCPagination>

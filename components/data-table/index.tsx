@@ -21,10 +21,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Pagination } from '@/types/common';
 import { DataTablePagination } from '@/components/data-table/pagination';
 import React from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { PAGINATION } from '@/constants/pagination';
 import { cn } from '@/lib/utils';
-import useQueryString from '@/hooks/use-query-string';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -48,19 +46,8 @@ export function DataTable<TData, TValue>({
   onClickExpendedRow,
   expandedRowModel,
 }: DataTableProps<TData, TValue>) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const createQueryString = useQueryString(searchParams);
   const [expanded, setExpanded] = React.useState<ExpandedState>({});
-
-  const { limit = PAGINATION.LIMIT, page = 1, total = 0 } = pagination || {};
-
-  const handleChangePage = (page: number) => {
-    router.push(createQueryString({ page, pathname }), {
-      scroll: false,
-    });
-  };
+  const { page = 1, total = 0 } = pagination || {};
 
   const table = useReactTable({
     defaultColumn: {
@@ -97,7 +84,10 @@ export function DataTable<TData, TValue>({
                     >
                       {header.isPlaceholder
                         ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
                   );
                 })}
@@ -123,7 +113,10 @@ export function DataTable<TData, TValue>({
                     >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
                         </TableCell>
                       ))}
                     </TableRow>
@@ -149,7 +142,10 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   Không có kết quả.
                 </TableCell>
               </TableRow>
@@ -158,15 +154,7 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       {pagination && (
-        <DataTablePagination
-          pagination={{
-            page,
-            total,
-            limit,
-            totalPage: Math.ceil(total / limit),
-          }}
-          handleChangePage={handleChangePage}
-        />
+        <DataTablePagination currentPage={page} totalPage={total} />
       )}
     </>
   );
