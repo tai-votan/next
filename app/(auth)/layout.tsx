@@ -1,6 +1,6 @@
 import { AppSidebar } from '@/components/app-sidebar';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import AppProviders from '@/app/providers';
+import AppProviders from '@/providers';
 
 export default function AuthLayout({
   children,
