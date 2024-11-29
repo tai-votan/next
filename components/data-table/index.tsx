@@ -81,6 +81,7 @@ export function DataTable<TData, TValue>({
                       style={{
                         width: headerSize === 150 ? 'auto' : headerSize,
                       }}
+                      colSpan={header.colSpan}
                     >
                       {header.isPlaceholder
                         ? null
