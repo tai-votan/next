@@ -17,18 +17,27 @@ const columnHelper = createColumnHelper<Person>();
 
 export const columns: ColumnDef<Person>[] = [
   columnHelper.group({
+    id: 'merge',
+    header: () => <div className="text-center">Merge row</div>,
+    meta: { rowSpan: 2 },
+    columns: [
+      columnHelper.accessor('firstName', {
+        meta: { hideHeader: true },
+        cell: (info) => info.getValue(),
+      }),
+    ],
+  }),
+  columnHelper.group({
     id: 'hello',
     header: () => <div className="text-center">Hello</div>,
     columns: [
-      columnHelper.accessor('firstName', {
+      columnHelper.accessor('status', {
         cell: (info) => info.getValue(),
-        footer: (props) => props.column.id,
       }),
       columnHelper.accessor((row) => row.lastName, {
         id: 'lastName',
         cell: (info) => info.getValue(),
         header: () => <span>Last Name</span>,
-        footer: (props) => props.column.id,
       }),
     ],
   }),

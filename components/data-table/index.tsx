@@ -68,32 +68,41 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      <div className="rounded-md border mb-4">
+      <div className="mb-4">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  const headerSize = header.getSize();
-                  return (
-                    <TableHead
-                      key={header.id}
-                      style={{
-                        width: headerSize === 150 ? 'auto' : headerSize,
-                      }}
-                      colSpan={header.colSpan}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
+            {table.getHeaderGroups().map((headerGroup) => {
+              return (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    const headerSize = header.getSize();
+
+                    const { hideHeader, rowSpan } =
+                      header?.column?.columnDef?.meta || {};
+
+                    if (hideHeader) return null;
+
+                    return (
+                      <TableHead
+                        key={header.id}
+                        style={{
+                          width: headerSize === 150 ? 'auto' : headerSize,
+                        }}
+                        colSpan={header.colSpan}
+                        rowSpan={rowSpan}
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
