@@ -36,6 +36,12 @@ interface DataTableProps<TData, TValue> {
   expandedRowModel?: (row: TData) => React.ReactNode;
 }
 
+interface CustomColumnMeta {
+  hideHeader?: boolean;
+  rowSpan?: number;
+  backgroundColor?: string;
+}
+
 export function DataTable<TData, TValue>({
   data,
   columns,
@@ -74,32 +80,39 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => {
               return (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    const headerSize = header.getSize();
+                  {headerGroup.headers.map(
+                    ({
+                      id,
+                      getSize,
+                      column,
+                      colSpan,
+                      isPlaceholder,
+                      getContext,
+                    }) => {
+                      const { meta = {}, header } = column.columnDef;
+                      const headerSize = getSize();
+                      const { hideHeader, rowSpan, backgroundColor } =
+                        meta as CustomColumnMeta;
 
-                    const { hideHeader, rowSpan } =
-                      header?.column?.columnDef?.meta || {};
+                      if (hideHeader) return null;
 
-                    if (hideHeader) return null;
-
-                    return (
-                      <TableHead
-                        key={header.id}
-                        style={{
-                          width: headerSize === 150 ? 'auto' : headerSize,
-                        }}
-                        colSpan={header.colSpan}
-                        rowSpan={rowSpan}
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                      </TableHead>
-                    );
-                  })}
+                      return (
+                        <TableHead
+                          key={id}
+                          style={{
+                            width: headerSize === 150 ? 'auto' : headerSize,
+                            backgroundColor,
+                          }}
+                          colSpan={colSpan}
+                          rowSpan={rowSpan}
+                        >
+                          {isPlaceholder
+                            ? null
+                            : flexRender(header, getContext())}
+                        </TableHead>
+                      );
+                    },
+                  )}
                 </TableRow>
               );
             })}
